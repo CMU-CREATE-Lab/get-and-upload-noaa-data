@@ -1,0 +1,75 @@
+{
+  "name": "noaa_nws_fo",
+  "prettyName": "NOAA National Weather Service Forecast Office",
+  "vendor": "NOAA National Weather Service Forecast Office",
+  "description": "NOAA National Weather Service Forecast Office",
+  "defaultChannelSpecs": {
+    "version": 1,
+    "channels": {
+      "temperature": {
+        "prettyName": "Temperature",
+        "units": "F",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "wind_speed": {
+        "prettyName": "Wind Speed",
+        "units": "mph",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "sky_cover": {
+        "prettyName": "Sky Cover",
+        "units": "%",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "precipitation_potential": {
+        "prettyName": "Precipitation Potential",
+        "units": "%",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "relative_humidity": {
+        "prettyName": "Relative Humidity",
+        "units": "%",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "wind_direction": {
+        "prettyName": "Wind Direction",
+        "units": "degrees true",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "mixing_height": {
+        "prettyName": "Mixing Height",
+        "units": "x100 ft",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      },
+      "ventilation_rate": {
+        "prettyName": "Ventilation Rate",
+        "units": "x1000 mph-ft",
+        "range": {
+          "min": null,
+          "max": null
+        }
+      }
+    }
+  }
+}
