@@ -17,7 +17,7 @@ def main(argv):
     soup_xml = bs4.BeautifulSoup(r.content, "lxml-xml")
 
     # Load and parse html data from NOAA
-    r = requests.get("http://forecast.weather.gov/MapClick.php?w3u=1&w10=mhgt&w10u=0&w13u=1&w14u=1&w15=vent&AheadHour=0&Submit=Submit&FcstType=digital&textField1=40.4242&textField2=-79.8853&site=all&unit=0&dd=&bw=")
+    r = requests.get("http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.4242&textField2=-79.8853&site=all")
     if r.status_code is not 200:
         logger.error("Error getting html data from NOAA")
         return
@@ -28,10 +28,10 @@ def main(argv):
     n = 7
 
     # Get name and location
-    device_name = "NOAA NWS " + soup_xml.find("description").text
+    device_name = "NOAA NWS " + soup_xml.find("city").text
     point = soup_xml.find("point")
-    lat = float(point["latitude"])
-    lng = float(point["longitude"])
+    lat = str2float(point["latitude"])
+    lng = str2float(point["longitude"])
 
     # Get current time and construct an epocht time array
     for k in soup_xml.find_all("start-valid-time"):
@@ -60,8 +60,8 @@ def main(argv):
             if len(vr) != 0: continue
             for m in k.parent.find_next_siblings():
                 vr.append(m.text)
-    mh = map(float, mh[0:n])
-    vr = map(float, vr[0:n])
+    mh = map(str2float, mh[0:n])
+    vr = map(str2float, vr[0:n])
 
     # Format data for uploading to ESDR
     data_json = {
@@ -86,12 +86,14 @@ def main(argv):
     if access_token is not None:
         uploadDataToEsdr(device_name, data_json, product_id, access_token, isPublic=1, latitude=lat, longitude=lng)
 
+    logger.info("-----------------------------------------------------------------------------") 
+
 def parseXmlValue(s, n):
     values = []
     for k in s:
         for m in k.find_all("value"):
             values.append(m.text)
-    return map(float, values[0:n])
+    return map(str2float, values[0:n])
 
 if __name__ == "__main__":
     main(sys.argv)

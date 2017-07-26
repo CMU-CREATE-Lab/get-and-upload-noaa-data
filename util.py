@@ -11,9 +11,18 @@ import uuid
 import pytz
 
 # Generate a logger for loggin files
-def generateLogger(file_name):
-    logging.basicConfig(filename=file_name, level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+def generateLogger(file_name, **options):
+    log_level = options["log_level"] if "log_level" in options else logging.INFO
+    if log_level == "debug": log_level = logging.DEBUG
+    logging.basicConfig(filename=file_name, level=log_level, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     return logging.getLogger(__name__)
+
+# Convert string to float in a safe way
+def str2float(string):
+    try:
+        return float(string)
+    except ValueError:
+        return None
 
 # Return a list of all files in a folder
 def getAllFileNamesInFolder(file_path):
@@ -113,7 +122,7 @@ def getEsdrAccessToken(auth_json_path):
     else:
         access_token = r_json["access_token"]
         user_id = r_json["userId"]
-        logger.info("ESDR returns: " + json.dumps(r_json) + " when getting the access token")
+        logger.debug("ESDR returns: " + json.dumps(r_json) + " when getting the access token")
         logger.info("Receive access token " + access_token)
         logger.info("Receive user ID " + str(user_id))
         return access_token, user_id 
@@ -141,7 +150,7 @@ def uploadDataToEsdr(device_name, data_json, product_id, access_token, **options
     if r.status_code is not 200:
         logger.error("ESDR returns: " + json.dumps(r_json) + " when getting the device ID for '" + device_name + "'")
     else:
-        logger.info("ESDR returns: " + json.dumps(r_json) + " when getting the device ID for '" + device_name + "'")
+        logger.debug("ESDR returns: " + json.dumps(r_json) + " when getting the device ID for '" + device_name + "'")
         if r_json["data"]["totalCount"] < 1:
             logger.error("'" + device_name + "' did not exist")
         else:
@@ -162,7 +171,7 @@ def uploadDataToEsdr(device_name, data_json, product_id, access_token, **options
             logger.error("ESDR returns: " + json.dumps(r_json) + " when creating a device for '" + device_name + "'")
             return None
         else:
-            logger.info("ESDR returns: " + json.dumps(r_json) + " when creating a device for '" + device_name + "'")
+            logger.debug("ESDR returns: " + json.dumps(r_json) + " when creating a device for '" + device_name + "'")
             device_id = r_json["data"]["id"]
             logger.info("Create new device ID " + str(device_id))
 
@@ -175,9 +184,9 @@ def uploadDataToEsdr(device_name, data_json, product_id, access_token, **options
     api_key = None
     api_key_read_only = None
     if r.status_code is not 200:
-        logger.info("ESDR returns: " + json.dumps(r_json) + " when getting the feed ID")
+        logger.debug("ESDR returns: " + json.dumps(r_json) + " when getting the feed ID")
     else:
-        logger.info("ESDR returns: " + json.dumps(r_json) + " when getting the feed ID")
+        logger.debug("ESDR returns: " + json.dumps(r_json) + " when getting the feed ID")
         if r_json["data"]["totalCount"] < 1:
             logger.info("No feed ID exists for device " + str(device_id))
         else:
@@ -220,7 +229,8 @@ def uploadDataToEsdr(device_name, data_json, product_id, access_token, **options
         logger.error("ESDR returns: " + json.dumps(r_json) + " when uploading data")
         return None
     else:
-        logger.info("ESDR returns: " + json.dumps(r_json) + " when uploading data")
+        logger.debug("ESDR returns: " + json.dumps(r_json) + " when uploading data")
 
     # Return a list of information for getting data from ESDR
+    logger.info("Data uploaded")
     return [device_id, feed_id, api_key, api_key_read_only]
