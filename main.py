@@ -25,7 +25,7 @@ def main(argv):
     soup_html = bs4.BeautifulSoup(r.content, "html.parser")
 
     # Number of data points (the current one plus the forecast of the next 6 hours)
-    n = 7
+    n = 48
 
     # Get name and location
     device_name = "NOAA NWS " + soup_xml.find("city").text
@@ -53,11 +53,9 @@ def main(argv):
     vr = []
     for k in soup_html.find_all("font"):
         if "Mixing Height" in k.text:
-            if len(mh) != 0: continue
             for m in k.parent.find_next_siblings():
                 mh.append(m.text)
         elif "Ventilation Rate" in k.text:
-            if len(vr) != 0: continue
             for m in k.parent.find_next_siblings():
                 vr.append(m.text)
     mh = map(str2float, mh[0:n])
@@ -79,7 +77,7 @@ def main(argv):
     }
     for k in zip(time, te, ws, ca, pp, hu, wd, mh, vr):
         data_json["data"].append(list(k))
-    
+
     # Upload data to ESDR
     product_id = 65
     access_token, user_id = getEsdrAccessToken("auth.json")
