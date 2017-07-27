@@ -1,20 +1,20 @@
 {
-  "name": "noaa_nws_fo",
+  "name": "noaa_nws_forecast_office",
   "prettyName": "NOAA National Weather Service Forecast Office",
   "vendor": "NOAA National Weather Service Forecast Office",
   "description": "NOAA National Weather Service Forecast Office",
   "defaultChannelSpecs": {
     "version": 1,
     "channels": {
-      "temperature": {
+      "temperature_degrees_c": {
         "prettyName": "Temperature",
-        "units": "F",
+        "units": "C",
         "range": {
           "min": null,
           "max": null
         }
       },
-      "wind_speed": {
+      "wind_speed_mph": {
         "prettyName": "Wind Speed",
         "units": "mph",
         "range": {
@@ -22,7 +22,7 @@
           "max": null
         }
       },
-      "sky_cover": {
+      "sky_cover_percentage": {
         "prettyName": "Sky Cover",
         "units": "%",
         "range": {
@@ -30,7 +30,7 @@
           "max": null
         }
       },
-      "precipitation_potential": {
+      "precipitation_potential_percentage": {
         "prettyName": "Precipitation Potential",
         "units": "%",
         "range": {
@@ -38,7 +38,7 @@
           "max": null
         }
       },
-      "relative_humidity": {
+      "relative_humidity_percentage": {
         "prettyName": "Relative Humidity",
         "units": "%",
         "range": {
@@ -46,7 +46,7 @@
           "max": null
         }
       },
-      "wind_direction": {
+      "wind_direction_degrees_true": {
         "prettyName": "Wind Direction",
         "units": "degrees true",
         "range": {
@@ -54,7 +54,7 @@
           "max": null
         }
       },
-      "mixing_height": {
+      "mixing_height_x100_ft": {
         "prettyName": "Mixing Height",
         "units": "x100 ft",
         "range": {
@@ -62,7 +62,7 @@
           "max": null
         }
       },
-      "ventilation_rate": {
+      "ventilation_rate_x1000_mph_ft": {
         "prettyName": "Ventilation Rate",
         "units": "x1000 mph-ft",
         "range": {

@@ -48,6 +48,9 @@ def main(argv):
     hu = parseXmlValue(soup_xml.find_all("humidity", type="relative"), n)
     wd = parseXmlValue(soup_xml.find_all("direction", type="wind"), n)
 
+    # Convert degrees F to C
+    te = map(lambda x: round((x-32)/1.8, 2), te)
+
     # Parse fire weather data
     mh = []
     vr = []
@@ -64,14 +67,14 @@ def main(argv):
     # Format data for uploading to ESDR
     data_json = {
         "channel_names": [
-            "temperature",
-            "wind_speed",
-            "sky_cover",
-            "precipitation_potential",
-            "relative_humidity",
-            "wind_direction",
-            "mixing_height",
-            "ventilation_rate"
+            "temperature_degrees_c",
+            "wind_speed_mph",
+            "sky_cover_percentage",
+            "precipitation_potential_percentage",
+            "relative_humidity_percentage",
+            "wind_direction_degrees_true",
+            "mixing_height_x100_ft",
+            "ventilation_rate_x1000_mph_ft"
         ],
         "data": []
     }
@@ -79,7 +82,7 @@ def main(argv):
         data_json["data"].append(list(k))
 
     # Upload data to ESDR
-    product_id = 65
+    product_id = 66
     access_token, user_id = getEsdrAccessToken("auth.json")
     if access_token is not None:
         uploadDataToEsdr(device_name, data_json, product_id, access_token, isPublic=1, latitude=lat, longitude=lng)
