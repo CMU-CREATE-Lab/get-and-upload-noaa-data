@@ -6,10 +6,20 @@ from datetime import datetime
 from dateutil.parser import parse
 
 def main(argv):
+    xml_urls = [
+        "http://forecast.weather.gov/MapClick.php?lat=40.4242&lon=-79.8853&FcstType=digitalDWML"
+    ]
+    html_urls = [
+        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&Fcs    tType=digital&textField1=40.4242&textField2=-79.8853&site=all"
+    ]
+    for x, h in zip(xml_urls, html_urls):
+        getNoaaData(x, h)
+
+def getNoaaData(xml_url, html_url):
     logger = generateLogger("log.log")
 
     # Load and parse xml data from NOAA
-    r = requests.get("http://forecast.weather.gov/MapClick.php?lat=40.4242&lon=-79.8853&FcstType=digitalDWML")
+    r = requests.get(xml_url)
     if r.status_code is not 200:
         logger.error("Error getting xml data from NOAA")
         return
@@ -17,7 +27,7 @@ def main(argv):
     soup_xml = bs4.BeautifulSoup(r.content, "lxml-xml")
 
     # Load and parse html data from NOAA
-    r = requests.get("http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.4242&textField2=-79.8853&site=all")
+    r = requests.get(html_url)
     if r.status_code is not 200:
         logger.error("Error getting html data from NOAA")
         return
