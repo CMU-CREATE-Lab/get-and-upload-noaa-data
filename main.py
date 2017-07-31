@@ -6,17 +6,39 @@ from datetime import datetime
 from dateutil.parser import parse
 
 def main(argv):
+    logger = generateLogger("log.log")
+    logger.info("==============================================================================")
+
+    # The order of the urls means:
+    # 1. Swissvale PA
+    # 2. Pittsburgh, PA
+    # 3. Bloomfield PA
+    # 4. Clairton PA
+    # 5. Braddock PA
     xml_urls = [
-        "http://forecast.weather.gov/MapClick.php?lat=40.4242&lon=-79.8853&FcstType=digitalDWML"
+        "http://forecast.weather.gov/MapClick.php?lat=40.4242&lon=-79.8853&FcstType=digitalDWML",
+        "http://forecast.weather.gov/MapClick.php?lat=40.4385&lon=-79.9973&FcstType=digitalDWML",
+        "http://forecast.weather.gov/MapClick.php?lat=40.4457&lon=-79.9546&FcstType=digitalDWML",
+        "http://forecast.weather.gov/MapClick.php?lat=40.2965&lon=-79.8939&FcstType=digitalDWML",
+        "http://forecast.weather.gov/MapClick.php?lat=40.4034&lon=-79.8684&FcstType=digitalDWML"
     ]
     html_urls = [
-        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&Fcs    tType=digital&textField1=40.4242&textField2=-79.8853&site=all"
+        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.4242&textField2=-79.8853&site=all",
+        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.4385&textField2=-79.9973&site=all",
+        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.4457&textField2=-79.9546&site=all",
+        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.2965&textField2=-79.8939&site=all",
+        "http://forecast.weather.gov/MapClick.php?w10=mhgt&w15=vent&AheadHour=0&Submit=Submit&&FcstType=digital&textField1=40.4034&textField2=-79.8684&site=all"
     ]
-    for x, h in zip(xml_urls, html_urls):
-        getNoaaData(x, h)
 
-def getNoaaData(xml_url, html_url):
+    access_token, user_id = getEsdrAccessToken("auth.json")
+    for x, h in zip(xml_urls, html_urls):
+        getNoaaData(x, h, access_token)
+
+    logger.info("==============================================================================")
+
+def getNoaaData(xml_url, html_url, access_token):
     logger = generateLogger("log.log")
+    logger.info("-----------------------------------------------------------------------------")
 
     # Load and parse xml data from NOAA
     r = requests.get(xml_url)
@@ -93,11 +115,8 @@ def getNoaaData(xml_url, html_url):
 
     # Upload data to ESDR
     product_id = 66
-    access_token, user_id = getEsdrAccessToken("auth.json")
     if access_token is not None:
         uploadDataToEsdr(device_name, data_json, product_id, access_token, isPublic=1, latitude=lat, longitude=lng)
-
-    logger.info("-----------------------------------------------------------------------------") 
 
 def parseXmlValue(s, n):
     values = []
