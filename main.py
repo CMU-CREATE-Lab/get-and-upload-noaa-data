@@ -93,8 +93,8 @@ def getNoaaData(xml_url, html_url, access_token):
         elif "Ventilation Rate" in k.text:
             for m in k.parent.find_next_siblings():
                 vr.append(m.text)
-    mh = map(str2float, mh[0:n])
-    vr = map(str2float, vr[0:n])
+    mh = map(lambda x: str2float(x, default_value=0), mh[0:n])
+    vr = map(lambda x: str2float(x, default_value=0), vr[0:n])
 
     # Format data for uploading to ESDR
     data_json = {
@@ -115,6 +115,7 @@ def getNoaaData(xml_url, html_url, access_token):
 
     # Upload data to ESDR
     product_id = 66
+    logger.info("Upload data: " + json.dumps(data_json))
     if access_token is not None:
         uploadDataToEsdr(device_name, data_json, product_id, access_token, isPublic=1, latitude=lat, longitude=lng)
 
@@ -123,7 +124,7 @@ def parseXmlValue(s, n):
     for k in s:
         for m in k.find_all("value"):
             values.append(m.text)
-    return map(str2float, values[0:n])
+    return map(lambda x: str2float(x, default_value=0), values[0:n])
 
 if __name__ == "__main__":
     main(sys.argv)
